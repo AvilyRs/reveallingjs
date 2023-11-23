@@ -1,7 +1,41 @@
 export class Revealling {
-  #revealElementsClasses: string[] = [];
+  #hideClass = "reveallingHideElement";
+  #showClass = "reveallingShowElement";
 
-  constructor(revealElementsClasses: string[]) {
-    this.#revealElementsClasses = revealElementsClasses;
+  #elements: HTMLCollectionOf<Element> | null = null
+
+  constructor() {
+    this.#elements = document.getElementsByClassName("reveal");
+    this.#initialize();
+  }
+
+  #hideElements() {
+    if (this.#elements !== null) {
+      for (let item of this.#elements) {
+        const elementClass = item.attributes.getNamedItem("class")?.value;
+        item.setAttribute("class", `${elementClass} reveallingHideElement`);
+      }
+    }
+  }
+
+  #showElements() {
+    if (this.#elements !== null) {
+      for (let item of this.#elements) {
+        const elementClass = (item.attributes.getNamedItem("class")?.value)?.replace(
+          this.#hideClass,
+          this.#showClass
+        );
+
+        item.setAttribute("class", elementClass || "");
+      }
+    }
+  }
+
+  #initialize() {
+    this.#hideElements();
+
+    setTimeout(() => {
+      this.#showElements();
+    }, 1000);
   }
 }
